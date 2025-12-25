@@ -1,15 +1,18 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMovieDetail } from '../../hooks/useMovieDetail';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import { getImageUrl, IMAGE_SIZES, formatDate, formatRuntime, formatCurrency } from '../../utils/constants';
+import { useState } from 'react';
 
 const MovieDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { movie, credits, similarMovies, recommendations, reviews, loading, error } = useMovieDetail(Number(id));
+    const [showAllCast, setShowAllCast] = useState(false);
+    const [showAllReviews, setShowAllReviews] = useState(false);
 
+    
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -85,7 +88,7 @@ const MovieDetail: React.FC = () => {
                             {movie.genres.map((genre) => (
                                 <span
                                     key={genre.id}
-                                    className="bg-imdb-gray text-white px-3 py-1 rounded-full text-sm"
+                                    className="bg-imdb-gray text-white px-3 py-1 rounded-full text-sm border border-white cursor-pointer hover:bg-white hover:text-black transition"
                                 >
                                     {genre.name}
                                 </span>
@@ -104,13 +107,16 @@ const MovieDetail: React.FC = () => {
                                 {director && (
                                     <div className="mb-3">
                                         <p className="text-gray-400 text-sm">Director</p>
-                                        <p className="text-white font-semibold">{director.name}</p>
+                                        
+                                        <p className="text-white cursor-pointer font-semibold hover:underline">
+                                            {director.name}
+                                        </p>
                                     </div>
                                 )}
                                 {writers && writers.length > 0 && (
                                     <div>
                                         <p className="text-gray-400 text-sm">Writers</p>
-                                        <p className="text-white font-semibold">{writers.map((w) => w.name).join(', ')}</p>
+                                        <p className="text-white font-semibold cursor-pointer hover:underline">{writers.map((w) => w.name).join(', ')}</p>
                                     </div>
                                 )}
                             </div>
@@ -146,91 +152,166 @@ const MovieDetail: React.FC = () => {
                                 <div className="md:col-span-2">
                                     <p className="text-gray-400 text-sm">Production</p>
                                     <p className="text-white font-semibold text-sm">
-                                        {movie.production_companies.map((company) => company.name).join(', ')}
+                                    {movie.production_companies.map((company, index) => (
+                                        <span key={company.id}>
+                                        <span className="cursor-pointer hover:underline">
+                                            {company.name}
+                                        </span>
+                                        {index < movie.production_companies.length - 1 && ', '}
+                                        </span>
+                                    ))}
                                     </p>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
+                {/* LOWER CONTENT – CENTERED */}
+                <div className="flex justify-center">
+                    <div className="w-full max-w-6xl">
+                        {/* Cast Section */}
+                        {credits && credits.cast.length > 0 && (
+                        <div className="mb-12">
+                            <h2 className="text-3xl font-bold text-white mb-6">👥 Top Cast</h2>
 
-                {/* Cast Section */}
-                {credits && credits.cast.length > 0 && (
-                    <div className="mb-12">
-                        <h2 className="text-3xl font-bold text-white mb-6">👥 Top Cast</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            {credits.cast.slice(0, 12).map((member) => (
-                                <div key={member.id} className="text-center">
-                                    <img
-                                        src={getImageUrl(member.profile_path, IMAGE_SIZES.PROFILE_MEDIUM)}
-                                        alt={member.name}
-                                        className="w-full h-48 object-cover rounded-lg mb-2"
-                                    />
-                                    <p className="text-white font-semibold text-sm line-clamp-2">{member.name}</p>
-                                    <p className="text-gray-400 text-xs line-clamp-2">{member.character}</p>
+                            {/* Cast list */}
+                            <div
+                            className={`
+                                grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6
+                                transition-all duration-300
+                                ${showAllCast ? '' : 'max-h-[160px] overflow-hidden'}
+                            `}
+                            >
+                            {credits.cast.slice(0, 18).map((member) => (
+                                <div key={member.id} className="flex items-center gap-4">
+                                <img
+                                    src={getImageUrl(member.profile_path, IMAGE_SIZES.PROFILE_MEDIUM)}
+                                    alt={member.name}
+                                    className="w-16 h-16 rounded-full object-cover bg-imdb-gray"
+                                />
+
+                                <div>
+                                    <p className="text-white font-semibold leading-tight cursor-pointer hover:underline">
+                                    {member.name}
+                                    </p>
+                                    <p className="text-gray-400 text-sm leading-tight">
+                                    {member.character}
+                                    </p>
+                                </div>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                )}
+                            </div>
 
-                {/* Reviews Section */}
-                {reviews && reviews.length > 0 && (
-                    <div className="mb-12">
-                        <h2 className="text-3xl font-bold text-white mb-6">💬 User Reviews ({reviews.length})</h2>
-                        <div className="space-y-4">
-                            {reviews.map((review) => (
-                                <div key={review.id} className="bg-slate-800 p-4 rounded-lg">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <div>
-                                            <p className="text-white font-semibold">{review.author}</p>
-                                            <p className="text-gray-400 text-sm">{new Date(review.created_at).toLocaleDateString()}</p>
-                                        </div>
-                                        {review.author_details?.rating && (
-                                            <div className="bg-imdb-yellow text-black px-2 py-1 rounded font-bold text-sm">
-                                                ⭐ {review.author_details.rating}/10
-                                            </div>
-                                        )}
-                                    </div>
-                                    <p className="text-gray-300 line-clamp-4">{review.content}</p>
-                                    <a
-                                        href={review.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-imdb-yellow hover:underline text-sm mt-2 inline-block"
-                                    >
-                                        Read full review →
-                                    </a>
+                            {/* Expand button */}
+                            {credits.cast.length > 6 && (
+                            <div className="mt-4 text-center">
+                                <button
+                                    onClick={() => setShowAllCast(!showAllCast)}
+                                    className="
+                                        text-sm font-semibold
+                                        cursor-pointer
+                                        text-gray-400
+                                        bg-gradient-to-b from-gray-400/40 to-gray-400/80
+                                        bg-clip-text text-transparent
+                                        transition-all duration-300
+                                        hover:from-gray-200 hover:to-gray-200
+                                        hover:text-gray-200
+                                    "
+                                >
+                                {showAllCast ? 'Show less ▲' : 'Show all cast ▼'}
+                                </button>
+                            </div>
+                            )}
+                        </div>
+                        )}
+
+                        {/* Reviews Section */}
+                        {reviews.map((review) => {
+                        const avatarUrl = review.author_details?.avatar_path
+                            ? review.author_details.avatar_path.startsWith('/https')
+                            ? review.author_details.avatar_path.slice(1)
+                            : getImageUrl(review.author_details.avatar_path)
+                            : null
+
+                        return (
+                            <div
+                            key={review.id}
+                            className="relative mb-12 bg-slate-800 p-4 pl-14 rounded-lg"
+                            >
+                            {/* Avatar */}
+                            <div className="absolute -top-4 -left-4">
+                                {avatarUrl ? (
+                                <img
+                                    src={getImageUrl(avatarUrl)}
+                                    alt={review.author}
+                                    className="w-12 h-12 rounded-full border-2 border-imdb-dark object-cover bg-gray-700"
+                                />
+                                ) : (
+                                <div className="w-12 h-12 rounded-full bg-imdb-gray border-2 border-imdb-dark flex items-center justify-center text-white font-bold">
+                                    {review.author.charAt(0).toUpperCase()}
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                                )}
+                            </div>
 
-                {/* Similar Movies */}
-                {similarMovies && similarMovies.length > 0 && (
-                    <div className="mb-12">
-                        <h2 className="text-3xl font-bold text-white mb-6">🎬 Similar Movies</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                            {similarMovies.map((movie) => (
-                                <MovieCard key={movie.id} movie={movie} />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-2">
+                                <div>
+                                <p className="text-white font-semibold">{review.author}</p>
+                                <p className="text-gray-400 text-sm">
+                                    {new Date(review.created_at).toLocaleDateString()}
+                                </p>
+                                </div>
 
-                {/* Recommendations */}
-                {recommendations && recommendations.length > 0 && (
-                    <div>
-                        <h2 className="text-3xl font-bold text-white mb-6">⚡ Recommendations</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                            {recommendations.map((movie) => (
-                                <MovieCard key={movie.id} movie={movie} />
-                            ))}
+                                {review.author_details?.rating !== null && review.author_details?.rating !== undefined && (
+                                <div className="bg-imdb-yellow text-white px-2 py-1 rounded font-bold text-sm">
+                                    ⭐ {review.author_details.rating}/10
+                                </div>
+                                )}
+                            </div>
+
+                            {/* Content */}
+                            <p className="text-gray-300 line-clamp-4">{review.content}</p>
+
+                            {/* Link */}
+                            <a
+                                href={review.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-imdb-yellow hover:underline text-sm mt-2 inline-block"
+                            >
+                                Read full review →
+                            </a>
+                            </div>
+                        )
+                        })}
+
+
+                        {/* Similar Movies */}
+                        {similarMovies && similarMovies.length > 0 && (
+                            <div className="mb-12">
+                                <h2 className="text-3xl font-bold text-white mb-6">🎬 Similar Movies</h2>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                                    {similarMovies.map((movie) => (
+                                        <MovieCard key={movie.id} movie={movie} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Recommendations */}
+                        {recommendations && recommendations.length > 0 && (
+                            <div>
+                                <h2 className="text-3xl font-bold text-white mb-6">⚡ Recommendations</h2>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                                    {recommendations.map((movie) => (
+                                        <MovieCard key={movie.id} movie={movie} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        </div>
                         </div>
                     </div>
-                )}
-            </div>
         </div>
     );
 };

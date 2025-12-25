@@ -7,10 +7,12 @@ import GenrePage from './pages/GenrePage/GenrePage';
 import MovieDetail from './pages/MovieDetail/MovieDetail';
 import Search from './pages/Search/Search';
 import Layout from './components/Layout/Layout';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Navbar />
       {/* <div className="min-h-screen bg-imdb-dark pt-16"> */}
       <Layout>
