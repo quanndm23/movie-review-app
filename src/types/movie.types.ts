@@ -97,3 +97,20 @@ export interface ImageConfig {
   poster_sizes: string[];
   profile_sizes: string[];
 }
+
+// Video interface
+export interface Video {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  size: number;
+  official: boolean;
+}
+
+// Video Response interface
+export interface VideoResponse {
+  id: number;
+  results: Video[];
+}

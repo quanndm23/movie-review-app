@@ -1,6 +1,6 @@
 
 import tmdbApi from "./tmdb";
-import { Movie, MovieDetail, ApiResponse, Credits, ImageConfig, Genre, Review } from "../types/movie.types";
+import { Movie, MovieDetail, ApiResponse, Credits, ImageConfig, Genre, Review, VideoResponse } from "../types/movie.types";
 
 // Get image configuration
 export const getConfiguration = async (): Promise<ImageConfig> => {
@@ -73,6 +73,14 @@ export const getMovieRecommendations = async (movieId: number, page: number = 1)
 export const getMovieReviews = async (movieId: number, page: number = 1): Promise<ApiResponse<Review>> => {
     const response = await tmdbApi.get(`/movie/${movieId}/reviews`, {
         params: { page, language: 'en-US' },
+    });
+    return response.data;
+};
+
+// Get movie videos
+export const getMovieVideos = async (movieId: number): Promise<VideoResponse> => {
+    const response = await tmdbApi.get(`/movie/${movieId}/videos`, {
+        params: { language: 'en-US' },
     });
     return response.data;
 };

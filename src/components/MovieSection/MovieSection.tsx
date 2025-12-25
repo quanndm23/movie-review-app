@@ -56,6 +56,24 @@ const MovieSection: React.FC<MovieSectionProps> = ({ title, description, movies,
         }
     };
 
+    const handleCarouselWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+        const container = e.currentTarget;
+        const isScrollable = container.scrollWidth > container.clientWidth;
+
+        // Nếu scroll dọc (deltaY) và không phải Shift+scroll
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey) {
+            // KHÔNG làm gì - để browser xử lý scroll trang bình thường
+            return;
+        }
+
+        // Chỉ xử lý scroll ngang
+        if (isScrollable && (e.shiftKey || Math.abs(e.deltaX) > 0)) {
+            e.preventDefault();
+            e.stopPropagation();
+            container.scrollLeft += e.deltaX || e.deltaY;
+        }
+    };
+
     return (
         <div className="w-full" ref={containerRef}>
             {/* Section Header */}
@@ -87,7 +105,8 @@ const MovieSection: React.FC<MovieSectionProps> = ({ title, description, movies,
                 <div
                     ref={carouselRef}
                     onScroll={handleScroll}
-                    className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide"
+                    onWheel={handleCarouselWheel}
+                    className="flex gap-6 overflow-x-auto overflow-y-hidden scroll-smooth scrollbar-hide"
                     style={{
                         scrollBehavior: 'smooth',
                         scrollbarWidth: 'none',
