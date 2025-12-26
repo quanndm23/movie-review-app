@@ -5,6 +5,7 @@ import { getMoviesByGenre } from '../../api/endpoints';
 import { Movie } from '../../types/movie.types';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Pagination from '../../components/Pagination/Pagination';
+import Footer from '../../components/Footer/Footer';
 
 interface Genre {
     id: number;
@@ -14,14 +15,14 @@ interface Genre {
 }
 
 const GENRES: Genre[] = [
-    { id: 28, name: 'Action', emoji: '🎬', description: 'Những bộ phim hành động đầy kịch tính và mãn nhãn với các pha hành động nghẹt thở' },
-    { id: 35, name: 'Comedy', emoji: '😂', description: 'Những bộ phim hài hước mang đến tiếng cười và niềm vui cho khán giả' },
-    { id: 18, name: 'Drama', emoji: '🎭', description: 'Những câu chuyện kịch tính, đầy cảm xúc và sâu sắc về cuộc sống' },
-    { id: 27, name: 'Horror', emoji: '👻', description: 'Những bộ phim kinh dị đáng sợ sẽ khiến bạn phải nín thở' },
-    { id: 878, name: 'Science Fiction', emoji: '🚀', description: 'Khám phá tương lai, công nghệ và những thế giới viễn tưởng kỳ thú' },
-    { id: 53, name: 'Thriller', emoji: '🔪', description: 'Những bộ phim gay cấn, hồi hộp khiến bạn không thể rời mắt' },
-    { id: 10749, name: 'Romance', emoji: '💕', description: 'Những câu chuyện tình yêu lãng mạn chạm đến trái tim' },
-    { id: 16, name: 'Animation', emoji: '🎨', description: 'Những bộ phim hoạt hình đầy màu sắc và sáng tạo cho mọi lứa tuổi' },
+    { id: 28, name: 'Action', emoji: '🎬', description: 'These action movies are thrilling and visually stunning, featuring breathtaking action sequences' },
+    { id: 35, name: 'Comedy', emoji: '😂', description: 'Comedy films bring laughter and joy to the audience' },
+    { id: 18, name: 'Drama', emoji: '🎭', description: 'Dramatic, emotional, and profound stories about life' },
+    { id: 27, name: 'Horror', emoji: '👻', description: 'These terrifying horror movies will leave you breathless' },
+    { id: 878, name: 'Science Fiction', emoji: '🚀', description: 'Explore the future, technology, and fascinating fantasy worlds' },
+    { id: 53, name: 'Thriller', emoji: '🔪', description: 'These thrilling and suspenseful films will keep you glued to the screen' },
+    { id: 10749, name: 'Romance', emoji: '💕', description: 'Romantic love stories that touch the heart' },
+    { id: 16, name: 'Animation', emoji: '🎨', description: 'Colorful and creative animated films for all ages' },
 ];
 
 const GenrePage: React.FC = () => {
@@ -82,25 +83,27 @@ const GenrePage: React.FC = () => {
                     <div className="text-center py-16">
                         <div className="text-6xl mb-4">😕</div>
                         <h1 className="text-3xl font-bold text-white mb-4">
-                            Không tìm thấy thể loại
+                            Genre not found
                         </h1>
                         <p className="text-gray-400 mb-8">
-                            Thể loại bạn đang tìm kiếm không tồn tại.
+                            The type of genre you're looking for doesn't exist.
                         </p>
                         <Link
                             to="/"
                             className="inline-block bg-imdb-yellow text-black font-semibold px-8 py-3 rounded hover:bg-yellow-500 transition"
                         >
-                            Quay về trang chủ
+                            Back to home
                         </Link>
                     </div>
                 </div>
+                <Footer />
+
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-imdb-dark pt-24 pb-16">
+        <div className="min-h-screen bg-imdb-dark pt-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
@@ -175,7 +178,10 @@ const GenrePage: React.FC = () => {
                     </div>
                 )}
             </div>
+            <Footer />
+
         </div>
+
     );
 };
 

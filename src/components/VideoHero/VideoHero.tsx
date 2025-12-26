@@ -197,14 +197,14 @@ const VideoHero: React.FC<VideoHeroProps> = ({ movieId }) => {
                 )}
 
                 {/* Video Type Badge */}
-                <div className="absolute top-4 left-4 z-10">
+                {/* <div className="absolute top-4 left-4 z-10">
                     <span className="px-3 py-1.5 bg-imdb-yellow text-black text-xs md:text-sm font-bold rounded shadow-lg flex items-center gap-2">
                         <svg className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
                         </svg>
                         {currentVideo.type}
                     </span>
-                </div>
+                </div> */}
 
                 {/* Video Info Overlay - Bottom Left */}
                 <div className="absolute bottom-16 md:bottom-20 left-4 md:left-6 right-4 z-10">
