@@ -34,7 +34,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
                         <p className="text-gray-300 text-sm drop-shadow-lg">
                             {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
                         </p>
-                        <div className="bg-imdb-yellow text-black px-2 py-1 rounded font-bold text-sm">
+                        <div className="bg-imdb-yellow text-white px-2 py-1 rounded font-bold text-sm">
                             ⭐ {movie.vote_average.toFixed(1)}
                         </div>
                     </div>
